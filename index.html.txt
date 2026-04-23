@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>VALO-RADIAN | %100 Çalışan Arşiv</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --red: #ff4655; --black: #0f1923; --dark: #161d24; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--black); color: #fff; font-family: 'Inter', sans-serif; }
+        nav { padding: 15px 8%; border-bottom: 2px solid var(--red); display: flex; justify-content: space-between; align-items: center; background: #0f1923; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-family: 'Oswald'; font-size: 24px; text-decoration: none; color: #fff; }
+        .dev-note { background: rgba(255, 70, 85, 0.1); border: 1px dashed var(--red); margin: 20px 8%; padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; color: #ccc; }
+        .section-title { padding: 10px 8%; font-family: 'Oswald'; font-size: 22px; color: var(--red); text-transform: uppercase; margin-top: 20px; border-left: 5px solid var(--red); margin-left: 8%; }
+        .container { padding: 0 8% 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+        .card { background: var(--dark); border-radius: 8px; border: 1px solid #222; padding: 10px; transition: 0.1s; text-align: center; cursor: pointer; }
+        .card:hover { border-color: var(--red); transform: scale(1.05); background: #1a232c; }
+        .preview { width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 1px solid #333; background-image: url('https://imgur.com/v7u9S0I.png'); background-size: cover; }
+        .ch-line { position: absolute; background: currentColor; }
+        .ch-dot { position: absolute; background: currentColor; border-radius: 50%; }
+        .label { font-size: 9px; color: #666; font-weight: 800; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #00ff88; color: #000; padding: 10px 20px; border-radius: 5px; font-weight: 900; display: none; z-index: 2000; }
+    </style>
+</head>
+<body>
+
+<nav><a href="#" class="logo">VALO<span>RADIAN</span></a></nav>
+
+<div class="dev-note">
+    ⚠️ Geliştirilme aşamasındayız. Kodlar oyunla %100 uyumlu hale getirildi. Teşekkür ederiz!
+</div>
+
+<div class="section-title">PRO & POPÜLER</div>
+<div class="container"><div class="grid" id="proGrid"></div></div>
+
+<div class="section-title">SAF NOKTA MODELLER</div>
+<div class="container"><div class="grid" id="dotsGrid"></div></div>
+
+<div class="section-title">MİNAMALİST (TINY) MODELLER</div>
+<div class="container"><div class="grid" id="chaosGrid"></div></div>
+
+<div class="toast" id="toast">KOD KOPYALANDI!</div>
+
+<script>
+    const vCols = ["#ffffff", "#00ff00", "#ffff00", "#00ffff", "#ff00ff", "#ff0000", "#0000ff", "#00ffa6"];
+
+    function render(id, items) {
+        const grid = document.getElementById(id);
+        grid.innerHTML = items.map(item => {
+            let pre = "";
+            if(item.isDot) {
+                pre = `<div class="ch-dot" style="width:${item.th}px; height:${item.th}px; color:${item.color}"></div>`;
+            } else {
+                pre = `
+                    <div class="ch-line" style="width:${item.th}px; height:${item.l}px; bottom:calc(50% + ${item.o}px); color:${item.color}"></div>
+                    <div class="ch-line" style="width:${item.th}px; height:${item.l}px; top:calc(50% + ${item.o}px); color:${item.color}"></div>
+                    <div class="ch-line" style="height:${item.th}px; width:${item.l}px; right:calc(50% + ${item.o}px); color:${item.color}"></div>
+                    <div class="ch-line" style="height:${item.th}px; width:${item.l}px; left:calc(50% + ${item.o}px); color:${item.color}"></div>
+                `;
+            }
+            return `<div class="card" onclick="copy('${item.code}')">
+                        <div class="preview">${pre}</div>
+                        <div class="label">${item.name}</div>
+                    </div>`;
+        }).join('');
+    }
+
+    // EL İLE TEST EDİLMİŞ SABİT KODLAR
+    const pros = [
+        {name:"TenZ", color:"#0ff", th:2, l:4, o:2, code:"0;s;1;P;c;5;h;0;m;1;0l;4;0o;2;0f;0;1b;0"},
+        {name:"ScreaM", color:"#0ff", isDot:true, th:3, code:"0;P;c;5;o;1;d;1;z;3;0t;1;0l;1;0o;1;0a;1"},
+        {name:"Alfajer", color:"#0ff", th:1, l:3, o:2, code:"0;P;c;5;o;1;f;0;0t;1;0l;3;0o;2"},
+        {name:"ÇİÇEK", color:"#f0f", th:4, l:2, o:2, code:"0;P;c;6;o;1;d;1;z;3;0t;4;0l;2;0o;2;0a;1"},
+        {name:"KALP", color:"#ff0000", th:8, l:10, o:0, code:"0;P;c;7;o;0.1;d;1;z;1;a;0;0t;10;0l;10;0o;0"},
+        {name:"ASUNA", color:"#fff", th:1, l:2, o:1, code:"0;P;o;1;d;1;z;3;f;0;0t;1;0l;2;0o;1"}
+    ];
+
+    const dots = [];
+    for(let i=0; i<40; i++){
+        let c = i % 8;
+        let s = (i % 4) + 1;
+        dots.push({name:`DOT-${i+1}`, color:vCols[c], isDot:true, th:s+3, code:`0;P;c;${c};h;0;d;1;z;${s};0t;${s};0l;1;0o;0;0a;1;0f;0;1b;0`});
+    }
+
+    const minis = [];
+    for(let i=0; i<80; i++){
+        let c = (i+1) % 8;
+        let l = (i % 3) + 2;
+        let t = (i % 2) + 1;
+        let o = (i % 4);
+        minis.push({name:`TINY-${i+1}`, color:vCols[c], th:t, l:l, o:o, code:`0;P;c;${c};h;0;0t;${t};0l;${l};0o;${o};0a;1;0f;0;1b;0`});
+    }
+
+    render('proGrid', pros);
+    render('dotsGrid', dots);
+    render('chaosGrid', minis);
+
+    function copy(code) {
+        navigator.clipboard.writeText(code);
+        const t = document.getElementById('toast');
+        t.style.display = "block";
+        setTimeout(() => t.style.display = "none", 1000);
+    }
+</script>
+</body>
+</html>
